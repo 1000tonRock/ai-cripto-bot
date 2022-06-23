@@ -1,7 +1,7 @@
 # ai-cripto-bot
 Cryptocurrencies bot using machine learning
 
-the file 'ia.py' is the principal bot
+the file 'ia.py' is the principal bot, you need to use the 'neural.py' file to generate the trained data
 
 The files 'bot.py' and 'parabot.py' are only used to suport the main file.
 
