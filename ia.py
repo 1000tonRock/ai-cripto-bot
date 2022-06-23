@@ -8,8 +8,8 @@ import config
 from binance.client import Client
 from binance.enums import *
 from neural import ia, calc, calculation, delnone
-
-win = [8.324759,-1.898609,-14.911500,-16.973872,37.006412,-11.993565,-4.140622,1.079467]
+ 
+win = '' # the best AI
 in_position = False
 doc = 'ia.txt'
 subtraction = 0
