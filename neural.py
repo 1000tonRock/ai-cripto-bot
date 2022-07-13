@@ -1,15 +1,27 @@
 import numpy as np
 import random as r
 import pandas as pd
-from champs import Vitoriosos 
+import time
+from champs3 import Vitoriosos 
 from bot import tecnicals, getdata
 from parabot import tec, TRADE_SYMBOL
 from beep import upbeep
+from dfwriter import dfr
 
+time_inicial = time.time()
 dfia = pd.DataFrame()
 dfout = pd.DataFrame()
 df = pd.DataFrame()
 exmult = False
+olddata = 'dydxbusd080522.txt'
+doc = 'champstest.py'
+
+Vitoriososz =[]
+
+for i in Vitoriosos[-1]:
+    x=i
+    x=int(x)
+    Vitoriososz.append(x)
 
 def getdfout():
     u = []
@@ -19,6 +31,7 @@ def getdfout():
 
     return dfout
 
+trei = [-5.179513,-8.271835,4.521662,-1.927740,12.996615,14.206938,-1.846567,0.242029,-4.511521]
 
 def getdfia(x=0):
     data=[]
@@ -33,12 +46,14 @@ def getdfia(x=0):
             ran = r.uniform(-10,10)
             data.append(ran)
         if x == 0 and (j%4 == 0):
-            dfia.insert(j,str(j),Vitoriosos[110])
+            dfia.insert(j,str(j),Vitoriosos[-1])
             continue
 
         dfia.insert(j,str(j),data)
 
+# get random data from binance:
 def getrdata():
+   
     s = r.randint(350,20000)
     x = getdata(TRADE_SYMBOL,'1m',str(s))
     try:
@@ -48,13 +63,24 @@ def getrdata():
 
     return x
 
-def block(x=0):
+# organiza os dados no bloco:
+def block(x=0, old=0):
+    # remover x # old define se vai recebar dados antigos
+
     c =[]
     r=[]
     d=[]
     p = []
     lu = []
-    df = getrdata()
+    
+    if old != 0:
+        df = dfr(olddata)
+        return df
+
+      
+    
+    df= getrdata()
+
     dt = pd.DataFrame()
     tecnicals(df)
     tec(df)
@@ -148,7 +174,13 @@ def ia(im1,num,r=0):
     out = 0
 
     for i in range(8):
-        o = sum(np.multiply(im1,ls[i]))
+
+        try:
+            o = sum(np.multiply(im1,ls[i]))
+        except:
+            print('im1: {}'.format(im1))
+            print('ls[i]: {}'.format(ls[i]))
+            exit()
         neu1.append(o)
         
     
@@ -174,11 +206,14 @@ def strategy(l=0,r=0):
     global df , dfout
     p = []
 
+    # for k in range(100,len(df.index)*100):
     for j in range(1,len(df.index)):
+        #j = int(k/100) 
+        #i = k -j*100
+
+        # if i==0
         outs = []
-        
-        
-    
+
         for i in range(100):
             cont = 0
             
@@ -217,8 +252,6 @@ def strategy(l=0,r=0):
                         auxp = p[-cont :]
                     cont = cont + 1
             
-            
-
             perf = calc(calculation(auxp,1))
             im1.append(perf)
             im1 = delnone(im1)
@@ -227,7 +260,7 @@ def strategy(l=0,r=0):
             if r != 0:
                 p.append(outs[-1])
         
-        
+        # if i==0:
         if r == 0:
             dfout.insert(j,str(j),outs)
         
@@ -245,11 +278,17 @@ def strategy(l=0,r=0):
         return x
 
 
-
-def calculation(c,z=0,dfy=df):
+# junta a lista de valores de compra e vendas executados
+def calculation(c,z=0,dfn=0):
     global df,dfout
     aux = []
     cal =[]
+    try:
+        if dfn == 0:
+            dfy = df
+    except:
+        dfy = dfn
+        
 
     
     if z == 0:
@@ -257,11 +296,21 @@ def calculation(c,z=0,dfy=df):
         mem = mem[1:]
     else:
         mem = c
-    
-    g = list(dfy['gab'])
+
+    # caso titulos sejam diferentes
+    try:
+        g = list(dfy['gab'])
+    except:
+        g = list(dfy['o'])
+
     gab = g
     b = False
     cont = 0
+
+    # correção do tamanho do mem
+    if len(gab) < len(mem):
+        mem = mem[-len(gab)::]
+        
     for i in mem:
         if b and (not i):
             aux.append(cont) 
@@ -277,9 +326,20 @@ def calculation(c,z=0,dfy=df):
 
         
         cont = cont + 1
+    
+
         
     for i in aux:
-       cal.append(gab[i])
+        try:
+            cal.append(gab[i])
+
+        except Exception as e:
+            print('ERROR IN CAL - {}'.format(e))
+
+            print('i - {}'.format(i))
+            print('aux - {}'.format(aux))
+            print('gab - {}'.format(gab))
+            print('cal - {}'.format(cal))
     
     
     return cal
@@ -321,9 +381,18 @@ def reward():
 def selection(rew):
     global exmult
     sel = [[0,0,0,0],[0,0,0,0]]
-
+    cont = 0
     for i in range(4):
+
         f = max(rew)
+        if cont == 0:
+            firstf = f
+            cont=cont+1
+        if (firstf > f) and (f == 0):
+            print('zero flag')
+            sel[0][i] = sel[0][0]
+            continue
+
         print(f)
         sel[0][i] = rew.index(f)
         sel[1][i] = (f)*100
@@ -407,12 +476,12 @@ def mutation(wn,s):
 
 def delnone(mylist):
     mylist = [str(x) for x in mylist]
-    for i in range(len(mylist)):
-        if mylist[i] == 'None':
-            mylist[i] = 0
-    
-    mylist = [float(x) for x in mylist ]
-    return mylist
+    ml = list(mylist)
+    for i in range(len(ml)):           
+        if ml[i] == 'None':
+            ml[i] = 0
+    ml = [float(x) for x in ml]
+    return ml
 
 def progress(v):
     vv = []
@@ -448,7 +517,7 @@ def main():
         
         print('Criando Bloco . . .')
 
-        df = block()
+        df = block(0,0)
 
         print(df)
 
@@ -498,7 +567,7 @@ def main():
                 fail = True
                 vitoriosos = vitoriosos[:-1]
                 ppp = ppp[:-1]
-                log = open('champs.txt', 'a')
+                log = open(doc, 'a')
                 log.write("Fail: ")
                 log.close()
                 if cont >= 25:
@@ -515,13 +584,13 @@ def main():
         print(w)
         gen.append(win)
         print(win)
-        log = open('champs.txt', 'a')
+        log = open(doc, 'a')
         log.write("0{}: ".format(gn - 1))
         log.write("{}\n".format(win))
         log.write("Melhor de cada: {}\n\n".format(mdgen))
         log.close()
 
-    log = open('champs.txt', 'a')
+    log = open(doc, 'a')
     log.write("Vitoriosos: {}\n".format(vitoriosos))
     log.write("Melhor de cada: {}\n\n".format(ppp))
     log.close()
@@ -537,3 +606,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+print('Demorou: {}'.format(time.time() - time_inicial))
