@@ -1,3 +1,4 @@
+import os
 def d():
     doc = input("Nome do documento: ")
     return doc
@@ -84,6 +85,8 @@ def calc(doc):
 
         except Exception as e:
             print("fim do array - {}".format(e))
+            print(1)
+            
 
 
         try:
@@ -96,6 +99,7 @@ def calc(doc):
             print()
         except Exception as e:
             print("fim do array - {}".format(e))
+            print(2)
 
         
 
@@ -111,7 +115,11 @@ def calc(doc):
     media = 0
     for i in lost:
         media = media + i
-    media = (media/(len(lost)))
+
+    if len(lost) > 0:
+        media = (media/(len(lost)))
+    else:
+        media = 0
 
 
     use = use - 1
@@ -138,4 +146,6 @@ def calc(doc):
     log.close
 
 if __name__ == '__main__':
-    calc(d())
+    d = d()
+    calc(d)
+    # os.remove(d)
