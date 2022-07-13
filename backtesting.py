@@ -2,14 +2,14 @@ from ia import *
 from lucroCalc import calc
 import winsound
 import os
-from champs2 import Vitoriosos
+from champs3 import Vitoriosos
 from neural import ia, strategy, calc, calculation, delnone
 
-win = Vitoriosos[-1]
+#win = Vitoriosos[-1]
 
+time_inicial = time.time()
 grup = '10300'
-
-
+# df = dfr('dydxbusd080522.txt')
 df = blockx(grup)
 #df = df[:-480]
 #tecnicals(df)
@@ -25,14 +25,17 @@ for i in range(2 , len(df.index)):
 
     auxp = p
     
-    if i == 2:
-        auxp = [False]
+    try:
+        v = auxp[-1]
+    except:
+        v = False
 
-    v = auxp[-1]
-    
     cont = 0
-    if not v:
-        auxp = []
+    if (not v) and (len(p) != 0):
+        for k in p[::-1]:
+            if k:
+                auxp = p[-cont :]
+            cont = cont + 1
     if v:
         for k in p[::-1]:
             if not k:
@@ -48,4 +51,5 @@ print(df)
 frequency = 2500  # Set Frequency To 2500 Hertz
 duration = 1000  # Set Duration To 1000 ms == 1 second
 winsound.Beep(frequency, duration)
+print('Demorou: {}'.format(time.time() - time_inicial))
 
