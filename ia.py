@@ -1,31 +1,62 @@
 import numpy as np
 import pandas as pd
-from bot import tecnicals, getdata, order
-from parabot import tec, TRADE_SYMBOL, TRADE_QUANTITY
+from bot import tecnicals, getdata, order, client
+from parabot import tec
 from datetime import datetime
 import time
 import config
 from binance.client import Client
 from binance.enums import *
-from neural import ia, calc, calculation, delnone
- 
-win = '' # the best AI
-in_position = False
+from neural import ia, strategy, calc, calculation, delnone
+from champs4 import Vitoriosos
+
+win = Vitoriosos[-1]
+TRADE_SYMBOL = 'ETHUSDT'
+TRADE_QUANTITY = 10.3 #USD
+subtraction = -0.0001
 doc = 'ia.txt'
-subtraction = 0
+in_position = False
 error = False
 kill = False
 
-def blockx(y="350"):
+def iax(im1,w):
+    global dfia
+    l = w
+    la = l[:6]
+    bias = l[-2]
+    lim = l[-1]
+    out = 0
+    
+    out = sum(np.multiply(im1,la)) + bias
+ 
+    
+    out = np.tanh(out)
+    lim = np.tanh(lim)
+    
+    if out > lim:
+        output = True
+    else:
+        output = False
+    
+    return output
+
+def blockx(y="350",t=TRADE_SYMBOL):
     c =[]
     r=[]
     d=[]
     p = []
     lu = []
-    df = getdata(TRADE_SYMBOL,'1m',y)
+    df = getdata(t,'1m',y)
+
+    if type(df) == bool:
+        print("waiting for connection")
+        time.sleep(1)
+        return blockx(y)
+
     dt = pd.DataFrame()
     tecnicals(df)
     tec(df)
+    print(df)
 
 
     for i in range(0 , len(df.index)):
@@ -79,27 +110,31 @@ def blockx(y="350"):
     dt['bolll'] = list(df['bolll'])
     dt['bollm'] = list(df['bollm'])
     dt['macd'] =list(df['macd'])
-    dt['Time'] = df.index
+    # dt['Time'] = df.index
     dt['gab'] = c
 
     return dt
 
 def strat(win,dfy,auxp):
-    global in_position,subtraction, error, kill,doc
+    global in_position,subtraction, error, kill,doc, TRADE_QUANTITY
 
     im1 = list(dfy.loc[len(dfy.index) -1 ])
-    im1 = im1[:-2]
+    im1 = im1[:-1]
     perf = calc(calculation(auxp,1,dfy))
+    per = delnone([perf])
+    perf = per[0]
     im1.append(perf)
-    im1 = delnone(im1)
-
     
     out = ia(im1,win,1)
 
-    
-    close_now = float(dfy.gab.iloc[-1])
-    # macd_now = float(df.macd.iloc[-1])
-    time_now = dfy.Time.iloc[-1]
+    try:
+        close_now = float(dfy.gab.iloc[-1])
+        # macd_now = float(df.macd.iloc[-1])
+        time_now = str(datetime.now())
+        # dfy.Time.iloc[-1]
+    except:
+        close_now = float(dfy.o.iloc[-1])
+        time_now = 42
 
     print('atual close: {}'.format(close_now))
     # print('atual MACD: {}'.format(macd_now))
@@ -115,7 +150,7 @@ def strat(win,dfy,auxp):
         else:
             print("BUY!BUY!BUY!")
             # put binance buy order logic here
-            #order_succeeded = order(SIDE_BUY, TRADE_QUANTITY, TRADE_SYMBOL)
+            # order_succeeded = order(SIDE_BUY, (TRADE_QUANTITY/close_now), TRADE_SYMBOL)
             order_succeeded =[True,close_now]
 
             if order_succeeded[0]:
@@ -133,12 +168,10 @@ def strat(win,dfy,auxp):
     
     if not out:
         if in_position:
-            print("sell")
-            if not error:
-                k = TRADE_QUANTITY
+            print("Sell! Sell! Sell!")
 
             # put binance sell logic here
-            #order_succeeded = order(SIDE_SELL, k, TRADE_SYMBOL)
+            # order_succeeded = order(SIDE_SELL, (TRADE_QUANTITY/close_now), TRADE_SYMBOL)
             order_succeeded = [True, close_now]
 
             if order_succeeded[0]:
@@ -155,7 +188,7 @@ def strat(win,dfy,auxp):
                     kill = True
             if not order_succeeded[0]:
                 error = True
-                k = k - subtraction
+                TRADE_QUANTITY = TRADE_QUANTITY - subtraction
         else:
             print("you don't have any, nothing to do")
         return out
@@ -174,15 +207,25 @@ def main():
     auxp = []
 
     while True:
+
+        if kill:
+            exit()
         
-        df = block()
+        df = blockx()
 
         auxp = p
 
-        v = auxp[-1]
-        
-        if not v:
-            auxp = []
+        try:
+            v = auxp[-1]
+        except:
+            v = False
+
+        cont = 0
+        if (not v) and (len(p) != 0):
+            for k in p[::-1]:
+                if k:
+                    auxp = p[-cont :]
+                cont = cont + 1
         if v:
             for k in p[::-1]:
                 if not k:
