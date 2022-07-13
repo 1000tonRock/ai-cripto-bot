@@ -14,7 +14,7 @@ dfout = pd.DataFrame()
 df = pd.DataFrame()
 exmult = False
 olddata = 'dydxbusd080522.txt'
-doc = 'champstest.py'
+doc = 'champs.txt'
 
 Vitoriososz =[]
 
