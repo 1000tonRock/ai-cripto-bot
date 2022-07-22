@@ -606,4 +606,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-print('Demorou: {}'.format(time.time() - time_inicial))
+    print('Demorou: {}'.format(time.time() - time_inicial))
