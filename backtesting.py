@@ -2,8 +2,8 @@ from ia import *
 from lucroCalc import calc
 import winsound
 import os
-from champs3 import Vitoriosos
 from neural import ia, strategy, calc, calculation, delnone
+# from champs4 import Vitoriosos
 
 #win = Vitoriosos[-1]
 
