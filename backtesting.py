@@ -51,5 +51,11 @@ print(df)
 frequency = 2500  # Set Frequency To 2500 Hertz
 duration = 1000  # Set Duration To 1000 ms == 1 second
 winsound.Beep(frequency, duration)
-print('Demorou: {}'.format(time.time() - time_inicial))
 
+d = time.time() - time_inicial
+if d <= 60:
+    print('Demorou: {} segundos'.format(d))
+else:
+    ds = d%60
+    d = d/60
+    print('Demorou: {} minutos e {} segundos'.format(d,ds))
