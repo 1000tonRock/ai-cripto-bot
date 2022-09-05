@@ -1,7 +1,7 @@
 # ai-cripto-bot
 *Cryptocurrencies bot using machine learning*
 
-## usage
+## Usage
 
 - The file 'ia.py' is the principal bot and main file, you need to use the 'neural.py' file to train using new data
 
