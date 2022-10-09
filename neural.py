@@ -378,27 +378,44 @@ def reward():
        rew.append(calc(calculation(i)))
     return rew
 
-def selection(rew):
-    global exmult
+def selection(rew,x=1):
+    # alterar a seleção para aceitar 20 
+
     sel = [[0,0,0,0],[0,0,0,0]]
+
+    lastsel = [[],[]]
+    for i in range(20):
+        lastsel[0].append(0)
+
     cont = 0
-    for i in range(4):
+    for i in range(20):
 
         f = max(rew)
         if cont == 0:
             firstf = f
             cont=cont+1
+
+        # retira zeros e substitui pela melhor
         if (firstf > f) and (f == 0):
             print('zero flag')
-            sel[0][i] = sel[0][0]
+            if i < 4 :
+                sel[0][i] = sel[0][0]
+            lastsel[0][i] = lastsel[0][0]
             continue
 
         print(f)
-        sel[0][i] = rew.index(f)
-        sel[1][i] = (f)*100
-        rew[rew.index(f)] = -10
 
-    return sel
+        if i < 4 :
+            sel[0][i] = rew.index(f)
+            sel[1][i] = (f)*100
+
+        lastsel[0][i] = rew.index(f)
+
+        rew[rew.index(f)] = -10
+    if x == 1:
+        return sel
+    if x == 2:
+        return lastsel
 
 def mutation(wn,s):
     global exmult
@@ -412,48 +429,30 @@ def mutation(wn,s):
     else:
         w[-1] = s
 
-    dat = []
-    for i in range(0,167):
-
-        ra = r.uniform(-10,10)
-        dat.append(ra)
-        
-    p0 = True
-    p1 = False
-    p2 = False
-    p3 = False
-    p4 = False
+ 
     
+    ## alterar esse trecho para um range de termos de w
+    j=0
     for i in range(len(dfia.index)):
-        if p0:
-            dfia.loc[i] = w[0]
-            p1 = True
-            p0 = False
-            
-        if p1:
-            dfia.loc[i] = w[1]
-            p2 = True
-            p1 = False
-        if p2:
-            dfia.loc[i] = w[2]
-            p3 = True
-            p2 = False
-        if p3:
-            dfia.loc[i] = w[3]
-            p4 = True
-            p3 = False
-        if p4:
-            dfia.loc[i] = dat
-            p0 = True
-            p4 = False
+        dfia.loc[i] = w[j]
+
+        j = j + 1
+        if j >= 20:
+            j=0
+     
 
     aux =[]
     
     x = 0
     for i in range(len(dfia.index)):
+        # adicionar um if para nao mutar todos os individuos x=1/33 == 3%
+        ind1 = r.randint(0,32)
+        if ind1 != 32:
+            continue
+
 
         aux = list(dfia.loc[i])
-        nmut = 55
+        nmut = 5 # numero de genes mutados nmut = 5
         used =[]
         while x < nmut:
             loc1 = r.randint(0,166)
@@ -471,7 +470,9 @@ def mutation(wn,s):
         
         dfia.loc[i] = aux
         if i == 89:
-            dfia.loc[i] = s 
+            dfia.loc[i] = s
+            
+
     return w
 
 def delnone(mylist):
@@ -544,6 +545,8 @@ def main():
 
             # index das quatro melhores / lucro
             win = selection(rew)
+            # index das 20 melhores: 2 -> 20 melhores
+            win20 = selection(rew,2)
 
             # index das quatro melhores
             t = win[0]
@@ -578,7 +581,7 @@ def main():
             print(mdgen,gn-1)
             
             print('Mutando . . .')
-            w = mutation(t,sub)
+            w = mutation(win20,sub)
 
                
         print(w)
