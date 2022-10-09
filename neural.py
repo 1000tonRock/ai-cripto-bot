@@ -1,10 +1,11 @@
+from lib2to3.pgen2.token import RBRACE
 import numpy as np
 import random as r
 import pandas as pd
 import time
 from champs3 import Vitoriosos 
 from bot import tecnicals, getdata
-from parabot import tec, TRADE_SYMBOL
+from parabot import tec
 from beep import upbeep
 from dfwriter import dfr
 
@@ -15,6 +16,9 @@ df = pd.DataFrame()
 exmult = False
 olddata = 'dydxbusd080522.txt'
 doc = 'champs.txt'
+
+TRADE_SYMBOL = 'ETHUSDT'
+TRADE_SYMBOL2 = 'ETHDOWNUSDT' 
 
 Vitoriososz =[]
 
@@ -63,12 +67,23 @@ def getrdata():
 
     return x
 
+def getrdata2():
+   
+    s = r.randint(350,20000)
+    x = getdata(TRADE_SYMBOL2,'1m',str(s))
+    try:
+        x = x[:-(s-350)]
+    except:
+        x = getrdata2()
+
+    return x
+
 # organiza os dados no bloco:
 def block(x=0, old=0):
     # remover x # old define se vai recebar dados antigos
 
     c =[]
-    r=[]
+    ri=[]
     d=[]
     p = []
     lu = []
@@ -78,8 +93,13 @@ def block(x=0, old=0):
         return df
 
       
-    
-    df= getrdata()
+    # alterar para duas db aleatoria
+    rint = r.randint(0,1)
+
+    if rint:
+        df= getrdata()
+    else:
+        df =getrdata2()
 
     dt = pd.DataFrame()
     tecnicals(df)
@@ -93,7 +113,7 @@ def block(x=0, old=0):
         c.append(a)
 
         b = (df.rsi.iloc[i])/100
-        r.append(b)
+        ri.append(b)
 
         e = (df.D.iloc[i])/100
         d.append(e)
@@ -121,7 +141,7 @@ def block(x=0, old=0):
             p.append(0)
     
 
-    dt['rsi'] = r
+    dt['rsi'] = ri
     dt['D'] = d
     dt['psar'] = p
     dt['ema0'] = list(df['ema0'])
