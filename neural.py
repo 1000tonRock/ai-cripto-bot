@@ -467,10 +467,7 @@ def mutation(wn,s):
     for i in range(len(wn[0])):
         w[i] = list(dfia.loc[wn[0][i]])
         
-    if s == w[0]:
-        pass
-    else:
-        w[-1] = s
+    
 
  
     
