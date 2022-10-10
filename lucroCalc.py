@@ -50,7 +50,7 @@ def calc(doc):
     print()
     
 
-    jump = 1
+    jump = 0
     L = []
     cont = 0
     lost = []
@@ -65,7 +65,7 @@ def calc(doc):
             dt = times[c + 1]
             print("Time: {}".format(dt))
 
-            lucro = (closes[c+1])/(closes[c]) - 1
+            lucro = (closes[c])/(closes[c-1]) - 1
             
             if lucro > 0:
                 good = good + 1
