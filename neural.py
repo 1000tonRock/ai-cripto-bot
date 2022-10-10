@@ -367,7 +367,9 @@ def calculation(c,z=0,dfn=0):
 def calc(closes):
     jump = 1
     L = []
-    for c in range(1,len(closes)):
+
+    # corrigir numero 1, desordena o calculo dos closes
+    for c in range(len(closes)):
         if c == jump:
             continue
 
