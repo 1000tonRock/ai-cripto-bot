@@ -367,6 +367,10 @@ def calculation(c,z=0,dfn=0):
 def calc(closes):
     jump = 1
     L = []
+    lost = []
+    good = 0
+    bad = 0
+    perda = 0
 
     # corrigir numero 1, desordena o calculo dos closes
     for c in range(len(closes)):
@@ -376,6 +380,14 @@ def calc(closes):
         try:
             lucro = (closes[c])/(closes[c - 1]) - 1
             
+            if lucro > 0:
+                good = good + 1
+            else:
+                bad = bad + 1
+                lost.append(lucro)
+                if perda > lucro:
+                    perda = lucro
+
             L.append(lucro)
 
             jump = c+1
@@ -383,14 +395,17 @@ def calc(closes):
         except Exception as e:
             print("fim do array - {}".format(e))
 
-        total = 1
-        for l in range(len(L)):
-            total = total + (total * L[l])
+    # erro: total dentro do for
 
-        total = total - 1
+    total = 1
+    for l in range(len(L)):
+        total = total + (total * L[l])
 
+    total = total - 1
 
-        return total
+    # erro: return dentro do for
+
+    return total
 
 
 
