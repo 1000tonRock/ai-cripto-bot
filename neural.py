@@ -419,13 +419,13 @@ def reward():
        rew.append(calc(calculation(i)))
     return rew
 
-def selection(rew,x=1):
+def selection(rewx,x=1):
     # alterar a seleção para aceitar 20 
-
+    rew = list(rewx)
     sel = [[0,0,0,0],[0,0,0,0]]
 
     lastsel = [[],[]]
-    for i in range(20):
+    for k in range(20):
         lastsel[0].append(0)
 
     cont = 0
@@ -446,13 +446,16 @@ def selection(rew,x=1):
 
         print(f)
 
-        if i < 4 :
-            sel[0][i] = rew.index(f)
-            sel[1][i] = (f)*100
-
         lastsel[0][i] = rew.index(f)
 
+        if i < 4 :
+            sel[0][i] = lastsel[0][i]
+            sel[1][i] = (f)*100
+
+        
+
         rew[rew.index(f)] = -10
+
     if x == 1:
         return sel
     if x == 2:
@@ -618,16 +621,35 @@ def main():
                 if cont >= 25:
                     fail = False
                 cont = cont + 1
-            #print(pp)
-            #print(vitoriosos)
-            sub = vitoriosos[pp[1]]
+
+
+
+            try:
+                sub = vitoriosos[pp[1]]
+            except:
+                print ('error in sub')
+                print('pp {}'.format(pp))
+                print('vitoriosos {}'.format(vitoriosos))
+                exit()
+
             print(mdgen,gn-1)
             
             print('Mutando . . .')
+            # para não estagnar na falha
+
+            print(win20)
+            
+            if fail and (win[1][0] > win[1][1]):
+                x = win20[0][0]
+                for i in range(len(win20[0])):
+                    win20[0][i] = x
+            print(win20)
+
+            #mutação
             w = mutation(win20,sub)
 
                
-        print(w)
+        #print(w)
         gen.append(win)
         print(win)
         log = open(doc, 'a')
