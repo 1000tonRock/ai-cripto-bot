@@ -57,7 +57,7 @@ def getdfia(x=0):
 
 # get random data from binance:
 def getrdata():
-   
+    print('bloco 1')
     s = r.randint(350,20000)
     x = getdata(TRADE_SYMBOL,'1m',str(s))
     try:
@@ -68,7 +68,7 @@ def getrdata():
     return x
 
 def getrdata2():
-   
+    print('bloco 2')
     s = r.randint(350,20000)
     x = getdata(TRADE_SYMBOL2,'1m',str(s))
     try:
@@ -404,7 +404,10 @@ def calc(closes):
     total = total - 1
 
     # taxa de acerto
-    winrate = (good/(bad+good))
+    if (bad !=0) or (good != 0):
+        winrate = (good/(bad+good))
+    else:
+        winrate = 0
     
     # multiplica pela taxa de acerto, para ter mais peso o acerto
     return total*winrate
