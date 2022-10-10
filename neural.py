@@ -478,8 +478,8 @@ def mutation(wn,s):
     ## alterar esse trecho para um range de termos de w
     j=0
     for i in range(len(dfia.index)):
-        print('i = {}'.format(i))
-        print('j = {}'.format(j))
+        # print('i = {}'.format(i))
+        # print('j = {}'.format(j))
         dfia.loc[i] = w[j]
 
         j = j + 1
@@ -622,8 +622,8 @@ def main():
                 if cont >= 25:
                     fail = False
                 cont = cont + 1
-            print(pp)
-            print(vitoriosos)
+            #print(pp)
+            #print(vitoriosos)
             sub = vitoriosos[pp[1]]
             print(mdgen,gn-1)
             
