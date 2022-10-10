@@ -479,7 +479,7 @@ def mutation(wn,s):
         dfia.loc[i] = w[j]
 
         j = j + 1
-        if j >= 20:
+        if j >= 19:
             j=0
      
 
