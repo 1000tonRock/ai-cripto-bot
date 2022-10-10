@@ -6,7 +6,7 @@ from champs4 import Vitoriosos
 from bot import tecnicals, getdata
 from parabot import tec
 from beep import upbeep
-from dfwriter import dfr
+#from dfwriter import dfr
 
 time_inicial = time.time()
 dfia = pd.DataFrame()
@@ -88,7 +88,7 @@ def block(x=0, old=0):
     lu = []
     
     if old != 0:
-        df = dfr(olddata)
+        # df = dfr(olddata)
         return df
 
       
