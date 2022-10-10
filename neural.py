@@ -1,9 +1,8 @@
-from lib2to3.pgen2.token import RBRACE
 import numpy as np
 import random as r
 import pandas as pd
 import time
-from champs3 import Vitoriosos 
+from champs4 import Vitoriosos 
 from bot import tecnicals, getdata
 from parabot import tec
 from beep import upbeep
