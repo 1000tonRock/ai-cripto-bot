@@ -461,10 +461,12 @@ def selection(rew,x=1):
 
 def mutation(wn,s):
     global exmult
-    w = [0,0,0,0]
+    w = []
+    for i in range(len(wn[0])):
+        w.append(0)
 
-    for i in range(len(wn)):
-        w[i] = list(dfia.loc[wn[i]])
+    for i in range(len(wn[0])):
+        w[i] = list(dfia.loc[wn[0][i]])
         
     if s == w[0]:
         pass
@@ -476,10 +478,12 @@ def mutation(wn,s):
     ## alterar esse trecho para um range de termos de w
     j=0
     for i in range(len(dfia.index)):
+        print('i = {}'.format(i))
+        print('j = {}'.format(j))
         dfia.loc[i] = w[j]
 
         j = j + 1
-        if j >= 19:
+        if j >= 20:
             j=0
      
 
@@ -618,7 +622,8 @@ def main():
                 if cont >= 25:
                     fail = False
                 cont = cont + 1
-            
+            print(pp)
+            print(vitoriosos)
             sub = vitoriosos[pp[1]]
             print(mdgen,gn-1)
             
