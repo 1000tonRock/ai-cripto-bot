@@ -403,9 +403,11 @@ def calc(closes):
 
     total = total - 1
 
-    # erro: return dentro do for
-
-    return total
+    # taxa de acerto
+    winrate = (good/(bad+good))
+    
+    # multiplica pela taxa de acerto, para ter mais peso o acerto
+    return total*winrate
 
 
 
