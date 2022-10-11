@@ -615,6 +615,7 @@ def main():
                 fail = True
                 vitoriosos = vitoriosos[:-1]
                 ppp = ppp[:-1]
+                pp = []
                 log = open(doc, 'a')
                 log.write("Fail: ")
                 log.close()
@@ -623,14 +624,10 @@ def main():
                 cont = cont + 1
 
 
-
-            try:
+            # corrigido erro do sub, pode falhar na primeira geração
+            if len(pp) > 0 or len(gen) == 0:
                 sub = vitoriosos[pp[1]]
-            except:
-                print ('error in sub')
-                print('pp {}'.format(pp))
-                print('vitoriosos {}'.format(vitoriosos))
-                exit()
+        
 
             print(mdgen,gn-1)
             
