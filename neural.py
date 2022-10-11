@@ -26,6 +26,17 @@ for i in Vitoriosos[-1]:
     x=int(x)
     Vitoriososz.append(x)
 
+def randomwb():
+    dat = []
+    for i in range(0,167):
+
+        ra = r.uniform(-10,10)
+        dat.append(ra)
+    
+    return dat
+    
+
+
 def getdfout():
     u = []
     for i in range(100):
@@ -470,16 +481,25 @@ def mutation(wn,s):
     for i in range(len(wn[0])):
         w[i] = list(dfia.loc[wn[0][i]])
         
-    
-
+    #criando dat aleatorio
+    dat = randomwb()
  
     
     ## alterar esse trecho para um range de termos de w
     j=0
     for i in range(len(dfia.index)):
+        if (j >= 15) and (j <= 19):
+            dfia.loc[i] = dat
+
+            j = j + 1
+            if j >= 20:
+                j=0
+            
+            continue
         # print('i = {}'.format(i))
         # print('j = {}'.format(j))
         dfia.loc[i] = w[j]
+
 
         j = j + 1
         if j >= 20:
@@ -495,7 +515,7 @@ def mutation(wn,s):
         if ind1 != 32:
             continue
 
-
+        # aumenta um pouco a mutação, mais idividuos e mais genes
         aux = list(dfia.loc[i])
         nmut = 5 # numero de genes mutados nmut = 5
         used =[]
@@ -626,21 +646,23 @@ def main():
 
             # corrigido erro do sub, pode falhar na primeira geração
             if len(pp) > 0 or len(gen) == 0:
-                sub = vitoriosos[pp[1]]
-        
+                try:
+                    sub = vitoriosos[pp[1]]
+                except:
+                    sub = randomwb()
 
             print(mdgen,gn-1)
             
             print('Mutando . . .')
             # para não estagnar na falha
 
-            print(win20)
+            #print(win20)
             
             if fail and (win[1][0] > win[1][1]):
                 x = win20[0][0]
                 for i in range(len(win20[0])):
                     win20[0][i] = x
-            print(win20)
+            #print(win20)
 
             #mutação
             w = mutation(win20,sub)
@@ -649,6 +671,9 @@ def main():
         #print(w)
         gen.append(win)
         print(win)
+        print()
+        print()
+        time.sleep(1)
         log = open(doc, 'a')
         log.write("0{}: ".format(gn - 1))
         log.write("{}\n".format(win))
