@@ -510,14 +510,14 @@ def mutation(wn,s):
     
     x = 0
     for i in range(len(dfia.index)):
-        # adicionar um if para nao mutar todos os individuos x=1/33 == 3%
-        ind1 = r.randint(0,32)
-        if ind1 != 32:
+        # adicionar um if para nao mutar todos os individuos x=1/10 == 10%
+        ind1 = r.randint(0,9)
+        if ind1 != 9:
             continue
 
         # aumenta um pouco a mutação, mais idividuos e mais genes
         aux = list(dfia.loc[i])
-        nmut = 5 # numero de genes mutados nmut = 5
+        nmut = 20 # numero de genes mutados nmut = 20
         used =[]
         while x < nmut:
             loc1 = r.randint(0,166)
