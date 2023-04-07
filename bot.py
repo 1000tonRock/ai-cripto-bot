@@ -35,9 +35,6 @@ def order(side, quantity, symbol,order_type=ORDER_TYPE_MARKET):
         buyprice = float(order['fills'][0]['price'])
     except Exception as e:
         print("an exception occured - {}".format(e))
-        frequency = 2500  # Set Frequency To 2500 Hertz
-        duration = 1000  # Set Duration To 1000 ms == 1 second
-        winsound.Beep(frequency, duration)
         log = open(doc, 'a')
         log.write("an exception occured - {}\n".format(e))
         log.close()
